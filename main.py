@@ -17,13 +17,10 @@ logging.basicConfig(
 logging.warning('log into app account')
 
 
-
-
 def download_images(link: str, photo_name: str):
     """
     downloading image from https://unsplash.com via requests library
     :param link: link to the photo. (link example: photo_object.body['urls']['full'])
-
     """
     try:
         response = requests.get(link, allow_redirects=True)
@@ -46,6 +43,7 @@ def download_images(link: str, photo_name: str):
     except HTTPError as e:
         logging.error('HTTP error %s', (e))
 
+
 def search_photos(py_un: PyUnsplash, query: str, quantity: int=2):
     """
     Search for a specified number of photos based on a given query 
@@ -54,19 +52,23 @@ def search_photos(py_un: PyUnsplash, query: str, quantity: int=2):
     :param quantity: quantity of searching photos (by default equal 2)
     """
     logging.warning('search required photos')
-    try:
-        search = py_un.search(type_='photos', query=query, per_page=quantity)
-        for photo in search.entries:
-            download_images(photo.body['urls']['full'],
-                            photo.body['alt_description'])
-    except Exception as e:
-        pass
+    if not isinstance(py_un, PyUnsplash):
+        raise ValueError(
+            f'you should pass the PyUnsplash object, not : {type(py_un)}')
+    
+    if not isinstance(query, str) or len(query) <=0:
+        raise ValueError('you should pass not empty srting to query value')
+    
+    search = py_un.search(type_='photos', query=query, per_page=quantity)
+
+    for photo in search.entries:
+        download_images(photo.body['urls']['full'],
+                        photo.body['alt_description'])
 
 def main():
     # instantiate PyUnsplash object
     py_un = PyUnsplash(api_key=api_key)
-    search_photos(py_un, 'readhead beauty')
-
+    search_photos(py_un, 'redhead beauty')
 
 
 

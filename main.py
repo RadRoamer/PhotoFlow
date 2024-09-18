@@ -1,5 +1,4 @@
 import logging
-import os
 import pathlib
 import requests
 from requests.exceptions import HTTPError
@@ -21,7 +20,7 @@ logging.warning('log into app account')
 # instantiate PyUnsplash object
 py_un = PyUnsplash(api_key=api_key)
 
-def download_images(link: str):
+def download_images(link: str, photo_name: str):
     """
     downloading image from https://unsplash.com via requests library
     :param link: link to the photo. (link example: photo_object.body['urls']['full'])
@@ -41,7 +40,7 @@ def download_images(link: str):
             pathlib.Path(img_folder).mkdir()
 
         # write image like binary file in current working directory
-        with open(f'{img_folder}/image.jpg', mode='wb') as file:
+        with open(f'{img_folder}/{photo_name}.jpg', mode='wb') as file:
             file.write(response.content)
 
         logging.warning('successfully downloading image')
@@ -52,7 +51,8 @@ def main():
     logging.warning('search required photos')
     search = py_un.search(type_='photos', query='redhead beauty', per_page=2)
     for photo in search.entries:
-        download_images(photo.body['urls']['full'])
+        download_images(photo.body['urls']['full'],
+                        photo.body['alt_description'])
 
 
 

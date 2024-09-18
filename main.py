@@ -17,8 +17,7 @@ logging.basicConfig(
 logging.warning('log into app account')
 
 
-# instantiate PyUnsplash object
-py_un = PyUnsplash(api_key=api_key)
+
 
 def download_images(link: str, photo_name: str):
     """
@@ -47,12 +46,27 @@ def download_images(link: str, photo_name: str):
     except HTTPError as e:
         logging.error('HTTP error %s', (e))
 
-def main():
+def search_photos(py_un: PyUnsplash, query: str, quantity: int=2):
+    """
+    Search for a specified number of photos based on a given query 
+    :param py_un: PyUnsplash object
+    :param query: searching query passed as string
+    :param quantity: quantity of searching photos (by default equal 2)
+    """
     logging.warning('search required photos')
-    search = py_un.search(type_='photos', query='redhead beauty', per_page=2)
-    for photo in search.entries:
-        download_images(photo.body['urls']['full'],
-                        photo.body['alt_description'])
+    try:
+        search = py_un.search(type_='photos', query=query, per_page=quantity)
+        for photo in search.entries:
+            download_images(photo.body['urls']['full'],
+                            photo.body['alt_description'])
+    except Exception as e:
+        pass
+
+def main():
+    # instantiate PyUnsplash object
+    py_un = PyUnsplash(api_key=api_key)
+    search_photos(py_un, 'readhead beauty')
+
 
 
 

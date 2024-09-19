@@ -30,8 +30,9 @@ def download_images(link: str, photo_name: str):
         logging.warning('successfully connect to photo page')
 
         # create folder for images in current directory
-        img_folder = pathlib.Path.cwd().__str__() + "/images"
-        # do not create new folder if already exists
+        img_folder = pathlib.Path.cwd() / "images"
+        
+        # do not create new folder if already exists 
         if not pathlib.Path(img_folder).exists():
             pathlib.Path(img_folder).mkdir()
 

@@ -30,15 +30,13 @@ def download_images(link: str, photo_name: str):
         logging.warning('successfully connect to photo page')
 
         # create folder for images in current directory
-        img_folder = pathlib.Path.cwd() / "images"
+        image_path = pathlib.Path.cwd() / "images" / f"{photo_name}.png"
         # create folder if not already exists
-        img_folder.mkdir(exist_ok=True)
+        image_path.parent.mkdir(exist_ok=True)
+        # write image to file
+        image_path.write_bytes(response.content)
 
-        # write image like binary file in current working directory
-        with open(f'{img_folder}/{photo_name}.jpg', mode='wb') as file:
-            file.write(response.content)
-
-        logging.warning('successfully downloading image')
+        logging.warning('successfully download image')
     except HTTPError as e:
         logging.error('HTTP error %s', (e))
 
@@ -67,7 +65,7 @@ def search_photos(py_un: PyUnsplash, query: str, quantity: int=2):
 def main():
     # instantiate PyUnsplash object
     py_un = PyUnsplash(api_key=api_key)
-    search_photos(py_un, 'porshe 911 full size')
+    search_photos(py_un, 'supra turbo')
 
 
 

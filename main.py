@@ -31,10 +31,8 @@ def download_images(link: str, photo_name: str):
 
         # create folder for images in current directory
         img_folder = pathlib.Path.cwd() / "images"
-        
-        # do not create new folder if already exists 
-        if not pathlib.Path(img_folder).exists():
-            pathlib.Path(img_folder).mkdir()
+        # create folder if not already exists
+        img_folder.mkdir(exist_ok=True)
 
         # write image like binary file in current working directory
         with open(f'{img_folder}/{photo_name}.jpg', mode='wb') as file:
@@ -69,7 +67,7 @@ def search_photos(py_un: PyUnsplash, query: str, quantity: int=2):
 def main():
     # instantiate PyUnsplash object
     py_un = PyUnsplash(api_key=api_key)
-    search_photos(py_un, 'redhead beauty')
+    search_photos(py_un, 'porshe 911 full size')
 
 
 

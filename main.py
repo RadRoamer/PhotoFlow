@@ -8,15 +8,23 @@ from dotenv import dotenv_values
 
 config = dotenv_values()
 api_key = config['API_KEY']
-
+# create logger
 logger = logging.getLogger(__name__)
+
+# create formatter to configure the log format
+formatter = logging.Formatter(
+    "[%(asctime)s] | %(filename)-20s:%(lineno)3d | %(levelname)-7s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S")
+
 console_handler = logging.StreamHandler()
 file_handler = logging.FileHandler("app.log", mode="a", encoding="utf-8")
+
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
-
-logger.warning('log into app account')
+# add formatter to handlers
+console_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
 
 
 def download_images(link: str, photo_name: str):
@@ -66,6 +74,7 @@ def search_photos(py_un: PyUnsplash, query: str, quantity: int = 2):
 
 
 def main():
+    logger.warning('log into app account')
     # instantiate PyUnsplash object
     py_un = PyUnsplash(api_key=api_key)
     search_photos(py_un, 'supra turbo')

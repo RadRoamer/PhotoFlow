@@ -11,9 +11,12 @@ api_key = config['API_KEY']
 
 
 logging.basicConfig(
+    filename='app.log',
+    encoding='utf-8',
+    filemode='w',
     format="[%(asctime)s] | %(filename)-20s:%(lineno)3d | %(levelname)-7s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S"
-    )
+)
 logging.warning('log into app account')
 
 
@@ -41,7 +44,7 @@ def download_images(link: str, photo_name: str):
         logging.error('HTTP error %s', (e))
 
 
-def search_photos(py_un: PyUnsplash, query: str, quantity: int=2):
+def search_photos(py_un: PyUnsplash, query: str, quantity: int = 2):
     """
     Search for a specified number of photos based on a given query 
     :param py_un: PyUnsplash object
@@ -52,15 +55,16 @@ def search_photos(py_un: PyUnsplash, query: str, quantity: int=2):
     if not isinstance(py_un, PyUnsplash):
         raise ValueError(
             f'you should pass the PyUnsplash object, not : {type(py_un)}')
-    
-    if not isinstance(query, str) or len(query) <=0:
+
+    if not isinstance(query, str) or len(query) <= 0:
         raise ValueError('you should pass not empty srting to query value')
-    
+
     search = py_un.search(type_='photos', query=query, per_page=quantity)
 
     for photo in search.entries:
         download_images(photo.body['urls']['full'],
                         photo.body['alt_description'])
+
 
 def main():
     # instantiate PyUnsplash object
@@ -68,7 +72,5 @@ def main():
     search_photos(py_un, 'supra turbo')
 
 
-
 if __name__ == '__main__':
     main()
-    

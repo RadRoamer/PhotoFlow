@@ -9,15 +9,14 @@ from dotenv import dotenv_values
 config = dotenv_values()
 api_key = config['API_KEY']
 
+logger = logging.getLogger(__name__)
+console_handler = logging.StreamHandler()
+file_handler = logging.FileHandler("app.log", mode="a", encoding="utf-8")
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
 
-logging.basicConfig(
-    filename='app.log',
-    encoding='utf-8',
-    filemode='w',
-    format="[%(asctime)s] | %(filename)-20s:%(lineno)3d | %(levelname)-7s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
-logging.warning('log into app account')
+
+logger.warning('log into app account')
 
 
 def download_images(link: str, photo_name: str):
@@ -30,7 +29,7 @@ def download_images(link: str, photo_name: str):
         # Raises an exception if status code is not 2xx
         response.raise_for_status()
 
-        logging.warning('successfully connect to photo page')
+        logger.warning('successfully connect to photo page')
 
         # create folder for images in current directory
         image_path = pathlib.Path.cwd() / "images" / f"{photo_name}.png"
@@ -39,9 +38,9 @@ def download_images(link: str, photo_name: str):
         # write image to file
         image_path.write_bytes(response.content)
 
-        logging.warning('successfully download image')
+        logger.warning('successfully download image')
     except HTTPError as e:
-        logging.error('HTTP error %s', e, exc_info=True)
+        logger.error('HTTP error %s', e, exc_info=True)
 
 
 def search_photos(py_un: PyUnsplash, query: str, quantity: int = 2):
@@ -51,7 +50,7 @@ def search_photos(py_un: PyUnsplash, query: str, quantity: int = 2):
     :param query: searching query passed as string
     :param quantity: quantity of searching photos (by default equal 2)
     """
-    logging.warning('search required photos')
+    logger.warning('search required photos')
     if not isinstance(py_un, PyUnsplash):
         raise ValueError(
             f'you should pass the PyUnsplash object, not : {type(py_un)}')

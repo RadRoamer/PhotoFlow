@@ -41,7 +41,7 @@ def download_images(link: str, photo_name: str):
 
         logging.warning('successfully download image')
     except HTTPError as e:
-        logging.error('HTTP error %s', (e))
+        logging.error('HTTP error %s', e, exc_info=True)
 
 
 def search_photos(py_un: PyUnsplash, query: str, quantity: int = 2):

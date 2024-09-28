@@ -29,6 +29,8 @@ logger.addHandler(file_handler)
 console_handler.setFormatter(formatter)
 file_handler.setFormatter(formatter)
 
+# configure logs for other modules
+logging.basicConfig(handlers=[console_handler, file_handler])
 
 def download_images(link: str, photo_name: str):
     """

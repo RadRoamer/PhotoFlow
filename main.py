@@ -10,6 +10,7 @@ config = dotenv_values()
 api_key = config['API_KEY']
 # create logger
 logger = logging.getLogger(__name__)
+logger.setLevel('DEBUG')
 
 # create formatter to configure the log format
 formatter = logging.Formatter(
@@ -17,7 +18,9 @@ formatter = logging.Formatter(
     datefmt="%Y-%m-%d %H:%M:%S")
 
 console_handler = logging.StreamHandler()
-file_handler = logging.FileHandler("app.log", mode="a", encoding="utf-8")
+console_handler.setLevel('DEBUG')
+file_handler = logging.FileHandler("app.log", mode="w", encoding="utf-8")
+file_handler.setLevel('WARNING')
 
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
@@ -37,7 +40,7 @@ def download_images(link: str, photo_name: str):
         # Raises an exception if status code is not 2xx
         response.raise_for_status()
 
-        logger.warning('successfully connect to photo page')
+        logger.debug('successfully connect to photo page')
 
         # create folder for images in current directory
         image_path = pathlib.Path.cwd() / "images" / f"{photo_name}.png"
@@ -46,7 +49,7 @@ def download_images(link: str, photo_name: str):
         # write image to file
         image_path.write_bytes(response.content)
 
-        logger.warning('successfully download image')
+        logger.warning("successfully download image: '%s'", photo_name)
     except HTTPError as e:
         logger.error('HTTP error %s', e, exc_info=True)
 
@@ -58,7 +61,7 @@ def search_photos(py_un: PyUnsplash, query: str, quantity: int = 2):
     :param query: searching query passed as string
     :param quantity: quantity of searching photos (by default equal 2)
     """
-    logger.warning('search required photos')
+    logger.warning("search for the required photos using the following query: '%s'", query)
     if not isinstance(py_un, PyUnsplash):
         raise ValueError(
             f'you should pass the PyUnsplash object, not : {type(py_un)}')

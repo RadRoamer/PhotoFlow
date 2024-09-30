@@ -12,8 +12,8 @@ config = dotenv_values()
 api_key = config['API_KEY']
 
 # open json logging config
-with pathlib.Path('logging.conf').open(mode='r', encoding='utf-8') as config:
-    logging.config.dictConfig(json.load(config))
+with pathlib.Path('logging.conf').open(mode='r', encoding='utf-8') as log_config:
+    logging.config.dictConfig(json.load(log_config))
 
 # create logger
 logger = logging.getLogger(__name__)

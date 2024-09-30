@@ -1,36 +1,24 @@
 import logging
+import logging.config
 import pathlib
 import requests
 from requests.exceptions import HTTPError
+import json
 
 from pyunsplash import PyUnsplash
 from dotenv import dotenv_values
 
 config = dotenv_values()
 api_key = config['API_KEY']
+
+# open json logging config
+with pathlib.Path('logging.conf').open(mode='r', encoding='utf-8') as config:
+    logging.config.dictConfig(json.load(config))
+
 # create logger
 logger = logging.getLogger(__name__)
 logger.setLevel('DEBUG')
 
-# create formatter to configure the log format
-formatter = logging.Formatter(
-    "[%(asctime)s] | %(filename)-20s:%(lineno)3d | %(levelname)-7s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S")
-
-console_handler = logging.StreamHandler()
-console_handler.setLevel('DEBUG')
-file_handler = logging.FileHandler("app.log", mode="w", encoding="utf-8")
-file_handler.setLevel('WARNING')
-
-logger.addHandler(console_handler)
-logger.addHandler(file_handler)
-
-# add formatter to handlers
-console_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
-
-# configure logs for other modules
-logging.basicConfig(handlers=[console_handler, file_handler])
 
 def download_images(link: str, photo_name: str):
     """
@@ -63,7 +51,8 @@ def search_photos(py_un: PyUnsplash, query: str, quantity: int = 2):
     :param query: searching query passed as string
     :param quantity: quantity of searching photos (by default equal 2)
     """
-    logger.warning("search for the required photos using the following query: '%s'", query)
+    logger.warning(
+        "search for the required photos using the following query: '%s'", query)
     if not isinstance(py_un, PyUnsplash):
         raise ValueError(
             f'you should pass the PyUnsplash object, not : {type(py_un)}')
@@ -82,7 +71,7 @@ def main():
     logger.warning('log into app account')
     # instantiate PyUnsplash object
     py_un = PyUnsplash(api_key=api_key)
-    search_photos(py_un, 'supra turbo')
+    search_photos(py_un, 'skyscraper')
 
 
 if __name__ == '__main__':

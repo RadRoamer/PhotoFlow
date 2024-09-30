@@ -1,6 +1,6 @@
 import logging
 import logging.config
-import pathlib
+from pathlib import Path
 import requests
 from requests.exceptions import HTTPError
 import json
@@ -12,7 +12,7 @@ config = dotenv_values()
 api_key = config['API_KEY']
 
 # open json logging config
-with pathlib.Path('logging.conf').open(mode='r', encoding='utf-8') as log_config:
+with Path('logging.conf').open(mode='r', encoding='utf-8') as log_config:
     logging.config.dictConfig(json.load(log_config))
 
 # create logger
@@ -33,7 +33,7 @@ def download_images(link: str, photo_name: str):
         logger.debug('successfully connect to photo page')
 
         # create folder for images in current directory
-        image_path = pathlib.Path.cwd() / "images" / f"{photo_name}.png"
+        image_path = Path.cwd() / "images" / f"{photo_name}.png"
         # create folder if not already exists
         image_path.parent.mkdir(exist_ok=True)
         # write image to file

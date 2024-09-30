@@ -1,4 +1,4 @@
 */
 .env
 Dockerfile
-app.log
+app.log*
